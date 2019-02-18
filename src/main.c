@@ -43,52 +43,54 @@ void map_goto(UINT16 x, UINT16 y) {
     map_bg_load_chunk(_map_x - 1, _map_y - 1, 0, 0, 22, 20);
 }
 
+// WARN:
+//    -1 <= dx <= 1
+//    -1 <= dy <= 1
+/*void map_scroll(INT8 dx, INT8 dy) {*/
 void map_scroll(INT8 dx, INT8 dy) {
     // Update coords
     _map_bg_x += dx;
     _map_bg_y += dy;
     // Load new tiles if necessary
     if (dx && !(_map_bg_x % 8)) {
-        /*if (dx > 0) {*/
         if (dx == 1) {
             _map_x += 1;
             map_bg_load_chunk(
-                    _map_x + 20,
+                    _map_x + GB_SCREEN_WIDTH,
                     _map_y - 1,
-                    (_map_bg_x/8 + 20) % 32,
-                    (_map_bg_y/8 - 1) % 32,
+                    ((UINT8)(_map_bg_x/8 + GB_SCREEN_WIDTH)) % GB_BG_WIDTH,
+                    ((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,
                     1,
-                    20);
+                    GB_SCREEN_HEIGHT + 2);
         } else {
             _map_x -= 1;
             map_bg_load_chunk(
                     _map_x,
                     _map_y - 1,
-                    (_map_bg_x/8 - 1) % 32,
-                    (_map_bg_y/8 - 1) % 32,
+                    ((UINT8)(_map_bg_x/8 - 1)) % GB_BG_WIDTH,
+                    ((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,
                     1,
-                    20);
+                    GB_SCREEN_HEIGHT + 2);
         }
     }
     if (dy && !(_map_bg_y % 8)) {
-        /*if (dy > 0) {*/
         if (dy == 1) {
             _map_y += 1;
             map_bg_load_chunk(
                     _map_x - 1,
-                    _map_y + 18,
-                    (_map_bg_x/8 - 1) % 32,
-                    (_map_bg_y/8 + 18) % 32,
-                    22,
+                    _map_y + GB_SCREEN_HEIGHT,
+                    ((UINT8)(_map_bg_x/8 - 1)) % GB_BG_WIDTH,
+                    ((UINT8)(_map_bg_y/8 + GB_SCREEN_HEIGHT)) % GB_BG_HEIGHT,
+                    GB_SCREEN_WIDTH + 2,
                     1);
         } else {
             _map_y -= 1;
             map_bg_load_chunk(
                     _map_x - 1,
                     _map_y,
-                    (_map_bg_x/8 - 1) % 32,
-                    (_map_bg_y/8 - 1) % 32,
-                    22,
+                    ((UINT8)(_map_bg_x/8 - 1)) % GB_BG_WIDTH,
+                    ((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,
+                    GB_SCREEN_WIDTH + 2,
                     1);
         }
     }
