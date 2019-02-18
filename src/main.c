@@ -27,10 +27,27 @@ void map_bg_load_chunk(UINT16 sx, UINT16 sy, UINT8 dx, UINT8 dy, UINT8 w, UINT8 
     UINT16 offset;
     UINT8 *lptr = NULL;
 
-    for (y = 0 ; y < h ; y++) {
-        offset = (sy + y) * _map_bg_width + sx;
-        lptr = _map_bg + offset;
-        set_bkg_tiles(dx, dy + y, w, 1, lptr);
+    if (dx + w > GB_BG_WIDTH) {
+        map_bg_load_chunk(
+                sx,
+                sy,
+                dx,
+                dy,
+                GB_BG_WIDTH - dx,
+                h);
+        map_bg_load_chunk(
+                sx + (GB_BG_WIDTH - dx),
+                sy,
+                0,
+                dy,
+                w - (GB_BG_WIDTH - dx),
+                h);
+    } else {
+        for (y = 0 ; y < h ; y++) {
+            offset = (sy + y) * _map_bg_width + sx;
+            lptr = _map_bg + offset;
+            set_bkg_tiles(dx, (dy + y) % GB_BG_HEIGHT, w, 1, lptr);
+        }
     }
 }
 
@@ -52,6 +69,27 @@ void map_scroll(INT8 dx, INT8 dy) {
     _map_bg_x += dx;
     _map_bg_y += dy;
     // Load new tiles if necessary
+    /*if (dx) {*/
+        /*if (dx == 1 && (_map_bg_x % 8) == 0) {*/
+            /*_map_x += 1;*/
+            /*map_bg_load_chunk(*/
+                    /*_map_x + GB_SCREEN_WIDTH,*/
+                    /*_map_y - 1,*/
+                    /*((UINT8)(_map_bg_x/8 + GB_SCREEN_WIDTH)) % GB_BG_WIDTH,*/
+                    /*((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,*/
+                    /*1,*/
+                    /*GB_SCREEN_HEIGHT + 2);*/
+        /*} else if (dx == ((UINT8) -1) && (_map_bg_x % 8) == 0) {*/
+            /*_map_x -= 1;*/
+            /*map_bg_load_chunk(*/
+                    /*_map_x,*/
+                    /*_map_y - 1,*/
+                    /*((UINT8)(_map_bg_x/8 - 1)) % GB_BG_WIDTH,*/
+                    /*((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,*/
+                    /*1,*/
+                    /*GB_SCREEN_HEIGHT + 2);*/
+        /*}*/
+    /*}*/
     if (dx && !(_map_bg_x % 8)) {
         if (dx == 1) {
             _map_x += 1;
