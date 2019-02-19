@@ -65,38 +65,17 @@ void map_goto(UINT16 x, UINT16 y) {
 //    -1 <= dy <= 1
 /*void map_scroll(INT8 dx, INT8 dy) {*/
 void map_scroll(INT8 dx, INT8 dy) {
-    // Update coords
-    _map_bg_x += dx;
-    _map_bg_y += dy;
+    // Update coords (> 0)
+    if (dx == 1) _map_bg_x += 1;
+    if (dy == 1) _map_bg_y += 1;
     // Load new tiles if necessary
-    /*if (dx) {*/
-        /*if (dx == 1 && (_map_bg_x % 8) == 0) {*/
-            /*_map_x += 1;*/
-            /*map_bg_load_chunk(*/
-                    /*_map_x + GB_SCREEN_WIDTH,*/
-                    /*_map_y - 1,*/
-                    /*((UINT8)(_map_bg_x/8 + GB_SCREEN_WIDTH)) % GB_BG_WIDTH,*/
-                    /*((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,*/
-                    /*1,*/
-                    /*GB_SCREEN_HEIGHT + 2);*/
-        /*} else if (dx == ((UINT8) -1) && (_map_bg_x % 8) == 0) {*/
-            /*_map_x -= 1;*/
-            /*map_bg_load_chunk(*/
-                    /*_map_x,*/
-                    /*_map_y - 1,*/
-                    /*((UINT8)(_map_bg_x/8 - 1)) % GB_BG_WIDTH,*/
-                    /*((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,*/
-                    /*1,*/
-                    /*GB_SCREEN_HEIGHT + 2);*/
-        /*}*/
-    /*}*/
     if (dx && !(_map_bg_x % 8)) {
         if (dx == 1) {
             _map_x += 1;
             map_bg_load_chunk(
                     _map_x + GB_SCREEN_WIDTH,
                     _map_y - 1,
-                    ((UINT8)(_map_bg_x/8 + GB_SCREEN_WIDTH)) % GB_BG_WIDTH,
+                    ((UINT8)((_map_bg_x/8) + GB_SCREEN_WIDTH)) % GB_BG_WIDTH,
                     ((UINT8)(_map_bg_y/8 - 1)) % GB_BG_HEIGHT,
                     1,
                     GB_SCREEN_HEIGHT + 2);
@@ -132,6 +111,9 @@ void map_scroll(INT8 dx, INT8 dy) {
                     1);
         }
     }
+    // Update coords (<0)
+    if (dx == (UINT8) -1) _map_bg_x -= 1;
+    if (dy == (UINT8) -1) _map_bg_y -= 1;
     // Scroll
     scroll_bkg(dx, dy);
 }
