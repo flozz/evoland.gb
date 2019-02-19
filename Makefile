@@ -12,11 +12,12 @@ run: build
 build: $(PROG).gb
 
 $(PROG).gb: $(_OBJ)
-	$(LL) -Wl-m -o $(PROG).ihx $^
+	$(LL) -o $(PROG).ihx $^
 	$(MR) $(PROG).ihx $(PROG).gb
+	./maptosym/maptosym.py $(PROG).map
 
 src/%.rel: src/%.c
-	$(CC) -Wa-l -o $@ -c $<
+	$(CC) -V -o $@ -c $<
 
 gassets:
 	img2gb tileset \

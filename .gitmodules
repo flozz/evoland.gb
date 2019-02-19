@@ -1,3 +1,6 @@
 [submodule "gbdk-n"]
 	path = gbdk-n
 	url = git@github.com:andreasjhkarlsson/gbdk-n.git
+[submodule "maptosym"]
+	path = maptosym
+	url = git@github.com:flozz/maptosym.git
