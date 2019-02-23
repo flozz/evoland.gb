@@ -3,6 +3,7 @@
 #include "./define.h"
 #include "./map.h"
 #include "./sprite16.h"
+#include "./palette.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
@@ -24,7 +25,7 @@ void main(void) {
     SPRITES_8x16;
     SHOW_SPRITES;
 
-    OBP0_REG = 0xE0;  // FIXME
+    palette_set_obp0(PALETTE_WHITE, PALETTE_WHITE, PALETTE_GRAY, PALETTE_BLACK);
     sprite16_new(0, 0, 80, 80);  // FIXME
 
     while (TRUE) {
