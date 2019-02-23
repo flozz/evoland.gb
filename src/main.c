@@ -4,6 +4,7 @@
 #include "./map.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
+#include "./gassets/sprites.tileset.h"
 
 void main(void) {
     INT8 dx;
@@ -11,9 +12,22 @@ void main(void) {
     UINT8 keys;
 
     set_bkg_data(0, BG_TILESET_TILE_COUNT, BG_TILESET);
+    set_sprite_data(0, SPRITES_TILE_COUNT, SPRITES);
+
     map_bg_set(BG_TILEMAP, BG_TILEMAP_WIDTH, BG_TILEMAP_HEIGHT);
+
     map_goto(24, 46);
+
     SHOW_BKG;
+
+    set_sprite_tile(0, 1);
+    set_sprite_tile(1, 2);
+    move_sprite(0, 80, 80);
+    move_sprite(1, 88, 80);
+
+    OBP0_REG = 0xE0;
+    SPRITES_8x16;
+    SHOW_SPRITES;
 
     while (TRUE) {
         dx = 0;

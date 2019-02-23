@@ -32,6 +32,13 @@ gassets:
 		--name BG_TILEMAP \
 		src/gassets/background.tileset.png \
 		./background-tilemap.png
+	img2gb tileset \
+		--output-c-file=src/gassets/sprites.tileset.c \
+		--output-header-file=src/gassets/sprites.tileset.h \
+		--output-image=src/gassets/sprites.tileset.png \
+		--sprite8x16 \
+		--name SPRITES \
+		./sprites.png
 
 gbdk-n-lib:
 	cd ./gbdk-n/ && make
