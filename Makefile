@@ -2,7 +2,7 @@ PROG = evoland
 CC = ./gbdk-n/bin/gbdk-n-compile.sh
 LL = ./gbdk-n/bin/gbdk-n-link.sh
 MR = ./gbdk-n/bin/gbdk-n-make-rom.sh
-_OBJ = $(patsubst %.c,%.rel,$(wildcard src/*.c))
+_OBJ = $(patsubst %.c,%.rel,$(wildcard src/*.c)) $(patsubst %.c,%.rel,$(wildcard src/*/*.c))
 
 all: build
 
@@ -21,16 +21,16 @@ src/%.rel: src/%.c
 
 gassets:
 	img2gb tileset \
-		--output-c-file=src/background.tileset.c \
-		--output-header-file=src/background.tileset.h \
-		--output-image=src/background.tileset.png \
+		--output-c-file=src/gassets/background.tileset.c \
+		--output-header-file=src/gassets/background.tileset.h \
+		--output-image=src/gassets/background.tileset.png \
 		--name BG_TILESET \
 		./background-tileset.png
 	img2gb tilemap \
-		--output-c-file=src/background.tilemap.c \
-		--output-header-file=src/background.tilemap.h \
+		--output-c-file=src/gassets/background.tilemap.c \
+		--output-header-file=src/gassets/background.tilemap.h \
 		--name BG_TILEMAP \
-		src/background.tileset.png \
+		src/gassets/background.tileset.png \
 		./background-tilemap.png
 
 gbdk-n-lib:
@@ -41,6 +41,10 @@ clean:
 	rm -rf src/*.lst
 	rm -rf src/*.sym
 	rm -rf src/*.asm
+	rm -rf src/*/*.rel
+	rm -rf src/*/*.lst
+	rm -rf src/*/*.sym
+	rm -rf src/*/*.asm
 	rm -rf $(PROG).gb
 	rm -rf $(PROG).ihx
 	rm -rf $(PROG).map

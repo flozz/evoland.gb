@@ -2,8 +2,8 @@
 
 #include "./define.h"
 #include "./map.h"
-#include "./background.tileset.h"
-#include "./background.tilemap.h"
+#include "./gassets/background.tileset.h"
+#include "./gassets/background.tilemap.h"
 
 void main(void) {
     INT8 dx;
