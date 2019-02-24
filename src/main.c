@@ -1,9 +1,9 @@
 #include <gb/gb.h>
 
 #include "./define.h"
-#include "./map.h"
-#include "./sprite16.h"
 #include "./palette.h"
+#include "./map.h"
+#include "./player.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
@@ -18,7 +18,7 @@ void main(void) {
 
     map_bg_set(BG_TILEMAP, BG_TILEMAP_WIDTH, BG_TILEMAP_HEIGHT);
 
-    map_goto(24, 46);
+    map_goto(24, 46);  // FIXME
 
     SHOW_BKG;
 
@@ -26,7 +26,8 @@ void main(void) {
     SHOW_SPRITES;
 
     palette_set_obp0(PALETTE_WHITE, PALETTE_WHITE, PALETTE_GRAY, PALETTE_BLACK);
-    sprite16_new(0, 0, 80, 80);  // FIXME
+
+    player_init();
 
     while (TRUE) {
         dx = 0;
@@ -39,9 +40,10 @@ void main(void) {
         if (keys & J_RIGHT) dx += 1;
 
         if (dx || dy) {
-            map_scroll(dx, dy);
+            player_walk_to_cell(dx, dy);
         }
 
+        player_loop();
         wait_vbl_done();
     }
 }
