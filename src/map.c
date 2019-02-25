@@ -1,6 +1,7 @@
 #include <gb/gb.h>
 
 #include "./define.h"
+#include "./map.h"
 
 UINT16 _map_x;
 UINT16 _map_y;
@@ -49,6 +50,13 @@ void map_bg_load_chunk(UINT16 sx, UINT16 sy, UINT8 dx, UINT8 dy, UINT8 w, UINT8 
     }
 }
 
+// Returned coordinates represents the center of the screen
+void map_get_coord(UINT16* x, UINT16* y) {
+    *x = _map_x + 9;
+    *y = _map_y + 8;
+}
+
+// Given coordinates represents the center of the screen
 void map_goto(UINT16 x, UINT16 y) {
     _map_x = x - 9;
     _map_y = y - 8;
@@ -113,4 +121,13 @@ void map_scroll(INT8 dx, INT8 dy) {
     if (dy == -1) _map_bg_y -= 1;
     // Scroll
     scroll_bkg(dx, dy);
+}
+
+UINT8 map_cell_is_walkable(UINT16 x, UINT16 y) {
+    UINT16 tile_offset = y * _map_bg_width + x;
+    UINT8 tile_id = _map_bg[tile_offset];
+    if (tile_id < MAP_WALKABLE_THRESHOLD) {
+        return TRUE;
+    }
+    return FALSE;
 }
