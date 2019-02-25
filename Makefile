@@ -17,7 +17,7 @@ $(PROG).gb: $(_OBJ)
 	./maptosym/maptosym.py $(PROG).map
 
 src/%.rel: src/%.c
-	$(CC) -V -o $@ -c $<
+	$(CC) -o $@ -c $<
 
 gassets:
 	img2gb tileset \

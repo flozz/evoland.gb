@@ -109,8 +109,8 @@ void map_scroll(INT8 dx, INT8 dy) {
         }
     }
     // Update coords (<0)
-    if (dx == (UINT8) -1) _map_bg_x -= 1;
-    if (dy == (UINT8) -1) _map_bg_y -= 1;
+    if (dx == -1) _map_bg_x -= 1;
+    if (dy == -1) _map_bg_y -= 1;
     // Scroll
     scroll_bkg(dx, dy);
 }
