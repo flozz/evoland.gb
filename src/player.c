@@ -28,6 +28,7 @@ Player* player_new() {
     player->anim_left = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_RIGHT, TRUE);
     player->_walk_to_count = 0;
     player->_is_walking = FALSE;
+    player->_anim_current = player->anim_down;
 
     return player;
 }
@@ -37,6 +38,7 @@ Player* player_new() {
 void player_walk_to_cell(INT8 dx, INT8 dy) {
     UINT16 map_x;
     UINT16 map_y;
+    Sprite16Anim* target_anim = NULL;
 
     _player->_is_walking = TRUE;
 
@@ -48,16 +50,24 @@ void player_walk_to_cell(INT8 dx, INT8 dy) {
     // Animate
     if (dx) {
         if (dx == 1) {
-            sprite16anim_play(_player->anim_right);
+            target_anim =_player->anim_right;
         } else {
-            sprite16anim_play(_player->anim_left);
+            target_anim =_player->anim_left;
         }
     } else if (dy) {
         if (dy == 1) {
-            sprite16anim_play(_player->anim_down);
+            target_anim =_player->anim_down;
         } else {
-            sprite16anim_play(_player->anim_up);
+            target_anim =_player->anim_up;
         }
+    }
+
+    if (target_anim != NULL) {
+        if (target_anim != _player->_anim_current) {
+            sprite16anim_stop(_player->_anim_current);
+        }
+        _player->_anim_current = target_anim;
+        sprite16anim_play(target_anim);
     }
 
 
@@ -81,10 +91,7 @@ void player_walk_to_cell(INT8 dx, INT8 dy) {
 void player_loop() {
     // Update animation
     if (!_player->_is_walking) {
-        sprite16anim_stop(_player->anim_down);
-        sprite16anim_stop(_player->anim_up);
-        sprite16anim_stop(_player->anim_right);
-        sprite16anim_stop(_player->anim_left);
+        sprite16anim_stop(_player->_anim_current);
     }
     // Move player
     if (_player->_walk_to_count) {

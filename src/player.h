@@ -14,6 +14,7 @@ struct Player {
     UINT8 _walk_to_dy;
     UINT8 _walk_to_count;
     UINT8 _is_walking;
+    Sprite16Anim* _anim_current;
 };
 
 typedef struct Player Player;
