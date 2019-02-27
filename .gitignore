@@ -8,3 +8,4 @@ gbdk-n
 *.lk
 *.gb
 *.map
+dist/
