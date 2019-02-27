@@ -13,6 +13,7 @@ struct Player {
     UINT8 _walk_to_dx;
     UINT8 _walk_to_dy;
     UINT8 _walk_to_count;
+    UINT8 _is_walking;
 };
 
 typedef struct Player Player;

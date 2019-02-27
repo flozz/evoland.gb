@@ -18,6 +18,7 @@ struct Sprite16Anim {
 typedef struct Sprite16Anim Sprite16Anim;
 
 void sprite16anim_init();
+UINT8 sprite16anim_is_playing(Sprite16Anim* anim);
 Sprite16Anim* sprite16anim_new(
         Sprite16* sprite,
         UINT8 fps,
