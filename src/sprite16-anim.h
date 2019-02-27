@@ -10,7 +10,7 @@ struct Sprite16Anim {
     UINT8 frame_skip;      // Speed of the animation (number of frame to skip)
     UINT8 frame_count;     // Number of frame in the animation
     UINT8* frames;         // List of the frame of the animation
-    UINT8 xflip;           // Mirror the sprite?
+    UINT8 flipx;           // Mirror the sprite?
     UINT8 _next_frame_id;  // (priv) Next frame to display
     UINT8 _frame_counter;  // (priv) remaining frame to skip
 };

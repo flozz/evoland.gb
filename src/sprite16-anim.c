@@ -19,7 +19,7 @@ Sprite16Anim* sprite16anim_new(
         UINT8 fps,
         UINT8 frame_count,
         UINT8* frames,
-        UINT8 xflip) {
+        UINT8 flipx) {
     Sprite16Anim* anim = malloc(sizeof(Sprite16Anim));
 
     if (anim == NULL) {
@@ -30,7 +30,7 @@ Sprite16Anim* sprite16anim_new(
     anim->frame_skip = GB_FPS / fps;
     anim->frame_count = frame_count;
     anim->frames = frames;
-    anim->xflip = xflip;
+    anim->flipx = flipx;
     return anim;
 }
 
@@ -83,6 +83,7 @@ void sprite16anim_loop() {
             continue;
         }
         if (!anim->_frame_counter) {
+            sprite16_set_flipx(anim->sprite, anim->flipx);
             sprite16_set_tile(anim->sprite, anim->frames[anim->_next_frame_id]);
             anim->_next_frame_id = (anim->_next_frame_id + 1) % anim->frame_count;
             anim->_frame_counter = anim->frame_skip;
