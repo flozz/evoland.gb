@@ -30,7 +30,7 @@ void sprite16_set_position(Sprite16* sprite, UINT8 x, UINT8 y) {
     move_sprite(sprite->id + 1, x + GB_TILE_SIZE, y);
 }
 
-void sprite16_destroy(Sprite16* sprite) {
+void sprite16_free(Sprite16* sprite) {
     if (sprite == NULL) {
         return;
     }

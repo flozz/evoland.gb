@@ -4,6 +4,7 @@
 #include "./palette.h"
 #include "./map.h"
 #include "./player.h"
+#include "./sprite16-anim.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
@@ -28,6 +29,7 @@ void main(void) {
     palette_set_obp0(PALETTE_WHITE, PALETTE_WHITE, PALETTE_GRAY, PALETTE_BLACK);
 
     player_init();
+    sprite16anim_init();
 
     while (TRUE) {
         dx = 0;
@@ -44,6 +46,7 @@ void main(void) {
         }
 
         player_loop();
+        sprite16anim_loop();
         wait_vbl_done();
     }
 }
