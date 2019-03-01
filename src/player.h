@@ -19,10 +19,9 @@ struct Player {
 
 typedef struct Player Player;
 
-void player_init();
 Player* player_new();
-void player_walk_to_cell(INT8 dx, INT8 dy);
-void player_loop();
+void player_walk_to_cell(Player* player, INT8 dx, INT8 dy);
+void player_update(Player* player);
 void _player_free(Player* player);
 
 #endif

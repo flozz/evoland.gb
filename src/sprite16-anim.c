@@ -74,7 +74,7 @@ void sprite16anim_stop(Sprite16Anim* anim) {
     }
 }
 
-void sprite16anim_loop() {
+void sprite16anim_update() {
     UINT8 i;
     Sprite16Anim* anim = NULL;
     for (i = 0 ; i < SPRITE16ANIM_MAX ; i++) {

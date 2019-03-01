@@ -8,12 +8,6 @@ UINT8 _PLAYER_FRAMES_DOWN[] = {0x00, 0x04};
 UINT8 _PLAYER_FRAMES_UP[] = {0x20, 0x24};
 UINT8 _PLAYER_FRAMES_RIGHT[] = {0x44, 0x40};
 
-Player* _player;
-
-void player_init() {
-    _player = player_new();
-}
-
 Player* player_new() {
     Player* player = malloc(sizeof(Player));
 
@@ -35,38 +29,38 @@ Player* player_new() {
 
 // -1 <= dx <= 1
 // -1 <= dy <= 1
-void player_walk_to_cell(INT8 dx, INT8 dy) {
+void player_walk_to_cell(Player* player, INT8 dx, INT8 dy) {
     UINT16 map_x;
     UINT16 map_y;
     Sprite16Anim* target_anim = NULL;
 
-    _player->_is_walking = TRUE;
+    player->_is_walking = TRUE;
 
     // Already in movement
-    if (_player->_walk_to_count) {
+    if (player->_walk_to_count) {
         return;
     }
 
     // Animate
     if (dx) {
         if (dx == 1) {
-            target_anim =_player->anim_right;
+            target_anim =player->anim_right;
         } else {
-            target_anim =_player->anim_left;
+            target_anim =player->anim_left;
         }
     } else if (dy) {
         if (dy == 1) {
-            target_anim =_player->anim_down;
+            target_anim =player->anim_down;
         } else {
-            target_anim =_player->anim_up;
+            target_anim =player->anim_up;
         }
     }
 
     if (target_anim != NULL) {
-        if (target_anim != _player->_anim_current) {
-            sprite16anim_stop(_player->_anim_current);
+        if (target_anim != player->_anim_current) {
+            sprite16anim_stop(player->_anim_current);
         }
-        _player->_anim_current = target_anim;
+        player->_anim_current = target_anim;
         sprite16anim_play(target_anim);
     }
 
@@ -83,23 +77,23 @@ void player_walk_to_cell(INT8 dx, INT8 dy) {
     }
 
     // Move
-    _player->_walk_to_dx = dx;
-    _player->_walk_to_dy = dy;
-    _player->_walk_to_count = MAP_CELL_SIZE;
+    player->_walk_to_dx = dx;
+    player->_walk_to_dy = dy;
+    player->_walk_to_count = MAP_CELL_SIZE;
 }
 
-void player_loop() {
+void player_update(Player* player) {
     // Update animation
-    if (!_player->_is_walking) {
-        sprite16anim_stop(_player->_anim_current);
+    if (!player->_is_walking) {
+        sprite16anim_stop(player->_anim_current);
     }
     // Move player
-    if (_player->_walk_to_count) {
-        _player->_walk_to_count -= 1;
-        map_scroll(_player->_walk_to_dx, _player->_walk_to_dy);
+    if (player->_walk_to_count) {
+        player->_walk_to_count -= 1;
+        map_scroll(player->_walk_to_dx, player->_walk_to_dy);
     }
-    if (!_player->_walk_to_count) {
-        _player->_is_walking = FALSE;
+    if (!player->_walk_to_count) {
+        player->_is_walking = FALSE;
     }
 }
 
