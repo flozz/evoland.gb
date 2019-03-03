@@ -36,6 +36,13 @@ void sprite16_set_position(Sprite16* sprite, UINT8 x, UINT8 y) {
     move_sprite(sprite->id + 1, x + GB_TILE_SIZE, y);
 }
 
+void sprite16_hide(Sprite16* sprite) {
+    sprite->x = 0;
+    sprite->y = 0;
+    move_sprite(sprite->id, 0, 0);
+    move_sprite(sprite->id + 1, 0, 0);
+}
+
 void sprite16_set_flipx(Sprite16* sprite, UINT8 flipx) {
     UINT8 tile_id;
     if (flipx == sprite->flipx) {

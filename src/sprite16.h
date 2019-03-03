@@ -18,6 +18,7 @@ typedef struct Sprite16 Sprite16;
 Sprite16* sprite16_new(UINT8 sprite_id, UINT8 tile_id, UINT8 x, UINT8 y);
 void sprite16_set_tile(Sprite16* sprite, UINT8 tile_id);
 void sprite16_set_position(Sprite16* sprite, UINT8 x, UINT8 y);
+void sprite16_hide(Sprite16* sprite);
 void sprite16_set_flipx(Sprite16* sprite, UINT8 flipx);
 void sprite16_free(Sprite16* sprite);
 
