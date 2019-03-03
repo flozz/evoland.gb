@@ -3,11 +3,13 @@
 #include "./map.h"
 #include "./player.h"
 #include "./sprite16.h"
+#include "./object.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
 
 Player* _game_player;
+Map* _game_map;
 
 void game_init() {
     SHOW_BKG;
@@ -19,8 +21,8 @@ void game_init() {
     set_bkg_data(0, BG_TILESET_TILE_COUNT, BG_TILESET);
     set_sprite_data(0, SPRITES_TILE_COUNT, SPRITES);
 
-    map_bg_set(BG_TILEMAP, BG_TILEMAP_WIDTH, BG_TILEMAP_HEIGHT);
-    map_goto(24, 46);
+    _game_map = map_new(BG_TILEMAP, BG_TILEMAP_WIDTH, BG_TILEMAP_HEIGHT);
+    map_goto(_game_map, 24, 46);
 
     _game_player = player_new();
 }
@@ -41,10 +43,10 @@ void game_main() {
         if (keys & J_RIGHT) dx += 1;
 
         if (dx || dy) {
-            player_walk_to_cell(_game_player, dx, dy);
+            player_walk_to_cell(_game_player, _game_map, dx, dy);
         }
 
-        player_update(_game_player);
+        player_update(_game_player, _game_map);
         sprite16anim_update();
         wait_vbl_done();
     }

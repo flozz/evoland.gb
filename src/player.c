@@ -2,7 +2,6 @@
 
 #include "./define.h"
 #include "./player.h"
-#include "./map.h"
 
 UINT8 _PLAYER_FRAMES_DOWN[] = {0x00, 0x04};
 UINT8 _PLAYER_FRAMES_UP[] = {0x20, 0x24};
@@ -20,6 +19,8 @@ Player* player_new() {
     player->anim_up = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_UP, FALSE);
     player->anim_right = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_RIGHT, FALSE);
     player->anim_left = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_RIGHT, TRUE);
+    player->screen_x = PLAYER_CENTER_X;
+    player->screen_y = PLAYER_CENTER_Y;
     player->_walk_to_count = 0;
     player->_is_walking = FALSE;
     player->_anim_current = player->anim_down;
@@ -29,9 +30,7 @@ Player* player_new() {
 
 // -1 <= dx <= 1
 // -1 <= dy <= 1
-void player_walk_to_cell(Player* player, INT8 dx, INT8 dy) {
-    UINT16 map_x;
-    UINT16 map_y;
+void player_walk_to_cell(Player* player, Map* map, INT8 dx, INT8 dy) {
     Sprite16Anim* target_anim = NULL;
 
     player->_is_walking = TRUE;
@@ -71,8 +70,10 @@ void player_walk_to_cell(Player* player, INT8 dx, INT8 dy) {
     }
 
     // Check for collision
-    map_get_coord(&map_x, &map_y);
-    if (!map_cell_is_walkable(map_x + dx*2, map_y + dy*2)) {
+    if (!map_cell_is_walkable(
+                map,
+                map->x + dx * 2 + player->screen_x,
+                map->y + dy * 2 + player->screen_y)) {
         return;
     }
 
@@ -82,7 +83,7 @@ void player_walk_to_cell(Player* player, INT8 dx, INT8 dy) {
     player->_walk_to_count = MAP_CELL_SIZE;
 }
 
-void player_update(Player* player) {
+void player_update(Player* player, Map* map) {
     // Update animation
     if (!player->_is_walking) {
         sprite16anim_stop(player->_anim_current);
@@ -90,7 +91,7 @@ void player_update(Player* player) {
     // Move player
     if (player->_walk_to_count) {
         player->_walk_to_count -= 1;
-        map_scroll(player->_walk_to_dx, player->_walk_to_dy);
+        map_scroll(map, player->_walk_to_dx, player->_walk_to_dy);
     }
     if (!player->_walk_to_count) {
         player->_is_walking = FALSE;
