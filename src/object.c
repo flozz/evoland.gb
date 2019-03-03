@@ -84,9 +84,6 @@ void object_update_all(UINT16 map_x, UINT16 map_y, UINT8 dx, UINT8 dy) {
     UINT8 i;
     Object* object;
 
-    map_x -= 8;
-    map_y -= 10;
-
     for (i = 0 ; i < OBJECT_SPRITE_POOL_SIZE ; i++) {
         if (_object_pool[i] == NULL) {
             continue;
@@ -94,8 +91,8 @@ void object_update_all(UINT16 map_x, UINT16 map_y, UINT8 dx, UINT8 dy) {
         object = _object_pool[i];
         sprite16_set_position(
                 object->_sprite,
-                (object->x - map_x) * GB_TILE_SIZE + dx,
-                (object->y - map_y) * GB_TILE_SIZE + dy);
+                (object->x - map_x) * GB_TILE_SIZE - dx + 8, // FIXME
+                (object->y - map_y) * GB_TILE_SIZE - dy);
     }
 }
 

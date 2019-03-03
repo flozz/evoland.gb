@@ -47,6 +47,11 @@ void game_main() {
         }
 
         player_update(_game_player, _game_map);
+        object_update_all(
+                _game_map->x,
+                _game_map->y,
+                _game_map->_bg_layer_x % GB_TILE_SIZE,
+                _game_map->_bg_layer_y % GB_TILE_SIZE);
         sprite16anim_update();
         wait_vbl_done();
     }

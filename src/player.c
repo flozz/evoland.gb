@@ -63,7 +63,6 @@ void player_walk_to_cell(Player* player, Map* map, INT8 dx, INT8 dy) {
         sprite16anim_play(target_anim);
     }
 
-
     // Avoid moving both verticaly and horizontaly
     if (dx) {
         dy = 0;
