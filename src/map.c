@@ -4,6 +4,9 @@
 #include "./define.h"
 #include "./map.h"
 
+// FIXME replace the tiles with grass -> {0x00, 0x01, 0x10, 0x11}
+UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x0E, 0x0F, 0x1E, 0x1F};
+
 Map* map_new(UINT8* bg_map, UINT8 bg_map_width, UINT8 bg_map_height) {
     Map* map = malloc(sizeof(Map));
 
@@ -138,6 +141,19 @@ UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y) {
         return TRUE;
     }
     return FALSE;
+}
+
+void map_cell_set_activated(Map* map, UINT8 x, UINT8 y) {
+    UINT8 screen_x = ((x - map->x + map->_bg_layer_x/8) % GB_BG_WIDTH) & 0xFE;
+    UINT8 screen_y = ((y - map->y + map->_bg_layer_y/8) % GB_BG_HEIGHT) | 0x01;
+    // Replace visible tiles
+    if (screen_y == GB_BG_HEIGHT - 1) {
+        set_bkg_tiles(screen_x, screen_y, 2, 1, MAP_ACTIVATED_CELL_PATCH);
+        set_bkg_tiles(screen_x, 0, 2, 1, MAP_ACTIVATED_CELL_PATCH + 2);
+    } else {
+        set_bkg_tiles(screen_x, screen_y, 2, 2, MAP_ACTIVATED_CELL_PATCH);
+    }
+    // TODO Mark cell in patch map
 }
 
 void map_free(Map* map) {

@@ -29,6 +29,8 @@ void game_init() {
 void game_main() {
     INT8 dx;
     INT8 dy;
+    UINT8 next_cell_x;
+    UINT8 next_cell_y;
     UINT8 keys;
 
     while (TRUE) {
@@ -40,6 +42,13 @@ void game_main() {
         if (keys & J_DOWN) dy += 1;
         if (keys & J_LEFT) dx -= 1;
         if (keys & J_RIGHT) dx += 1;
+
+        next_cell_x = _game_map->x + PLAYER_CENTER_X + 1 + _game_player->dx * 2;
+        next_cell_y = _game_map->y + PLAYER_CENTER_Y + _game_player->dy * 2;
+
+        if (keys & J_A) {
+            map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
+        }
 
         if (dx || dy) {
             player_walk_to_cell(_game_player, _game_map, dx, dy);

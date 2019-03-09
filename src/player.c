@@ -21,6 +21,8 @@ Player* player_new() {
     player->anim_left = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_RIGHT, TRUE);
     player->screen_x = PLAYER_CENTER_X;
     player->screen_y = PLAYER_CENTER_Y;
+    player->dx = 0;
+    player->dy = 1;
     player->_walk_to_count = 0;
     player->_is_walking = FALSE;
     player->_anim_current = player->anim_down;
@@ -40,20 +42,29 @@ void player_walk_to_cell(Player* player, Map* map, INT8 dx, INT8 dy) {
         return;
     }
 
+    // Avoid moving both verticaly and horizontaly
+    if (dx) {
+        dy = 0;
+    }
+
     // Animate
     if (dx) {
         if (dx == 1) {
-            target_anim =player->anim_right;
+            target_anim = player->anim_right;
         } else {
-            target_anim =player->anim_left;
+            target_anim = player->anim_left;
         }
     } else if (dy) {
         if (dy == 1) {
-            target_anim =player->anim_down;
+            target_anim = player->anim_down;
         } else {
-            target_anim =player->anim_up;
+            target_anim = player->anim_up;
         }
     }
+
+    // Update direction
+    player->dx = dx;
+    player->dy = dy;
 
     if (target_anim != NULL) {
         if (target_anim != player->_anim_current) {
@@ -61,11 +72,6 @@ void player_walk_to_cell(Player* player, Map* map, INT8 dx, INT8 dy) {
         }
         player->_anim_current = target_anim;
         sprite16anim_play(target_anim);
-    }
-
-    // Avoid moving both verticaly and horizontaly
-    if (dx) {
-        dy = 0;
     }
 
     // Check for collision
@@ -77,8 +83,6 @@ void player_walk_to_cell(Player* player, Map* map, INT8 dx, INT8 dy) {
     }
 
     // Move
-    player->_walk_to_dx = dx;
-    player->_walk_to_dy = dy;
     player->_walk_to_count = MAP_CELL_SIZE;
 }
 
@@ -90,7 +94,7 @@ void player_update(Player* player, Map* map) {
     // Move player
     if (player->_walk_to_count) {
         player->_walk_to_count -= 1;
-        map_scroll(map, player->_walk_to_dx, player->_walk_to_dy);
+        map_scroll(map, player->dx, player->dy);
     }
     if (!player->_walk_to_count) {
         player->_is_walking = FALSE;

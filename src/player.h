@@ -16,8 +16,8 @@ struct Player {
     Sprite16Anim* anim_left;
     UINT8 screen_x;  // x position on screen space (in tile)
     UINT8 screen_y;  // y position on screen space (in tile)
-    UINT8 _walk_to_dx;
-    UINT8 _walk_to_dy;
+    UINT8 dx;        // Direction x
+    UINT8 dy;        // Direction y
     UINT8 _walk_to_count;
     UINT8 _is_walking;
     Sprite16Anim* _anim_current;

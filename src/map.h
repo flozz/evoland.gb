@@ -32,6 +32,7 @@ void map_bg_load_chunk(
 void map_goto(Map* map, UINT8 x, UINT8 y);
 void map_scroll(Map* map, INT8 dx, INT8 dy);
 UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y);
+void map_cell_set_activated(Map* map, UINT8 x, UINT8 y);
 void map_free(Map* map);
 
 #endif
