@@ -3,7 +3,6 @@
 #include "./map.h"
 #include "./player.h"
 #include "./sprite16.h"
-#include "./object.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
@@ -47,11 +46,6 @@ void game_main() {
         }
 
         player_update(_game_player, _game_map);
-        object_update_all(
-                _game_map->x,
-                _game_map->y,
-                _game_map->_bg_layer_x % GB_TILE_SIZE,
-                _game_map->_bg_layer_y % GB_TILE_SIZE);
         sprite16anim_update();
         wait_vbl_done();
     }
