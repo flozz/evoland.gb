@@ -1,5 +1,5 @@
 PROG = evoland
-CC = ./gbdk-n/bin/gbdk-n-compile.sh
+CC = ./gbdk-n/bin/gbdk-n-compile.sh -DDEBUG
 LL = ./gbdk-n/bin/gbdk-n-link.sh
 MR = ./gbdk-n/bin/gbdk-n-make-rom.sh
 _OBJ = $(patsubst %.c,%.rel,$(wildcard src/*.c)) $(patsubst %.c,%.rel,$(wildcard src/*/*.c))
