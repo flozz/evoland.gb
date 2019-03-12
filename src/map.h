@@ -14,12 +14,15 @@ struct Map {
     UINT8 bg_map_height;
     UINT8 _bg_layer_x;
     UINT8 _bg_layer_y;
+    UINT8* _bg_map_patch;
 };
 
 typedef struct Map Map;
 
 Map* map_new(UINT8* bg_map, UINT8 bg_map_width, UINT8 bg_map_height);
-//void map_bg_set(UINT8* map, UINT16 width, UINT16 height);
+inline UINT8 map_cell_is_activated(Map* map, UINT8 x, UINT8 y);
+void map_cell_set_activated(Map* map, UINT8 x, UINT8 y);
+inline void map_cell_patch(Map* map, UINT8 x, UINT8 y);
 void map_bg_load_chunk(
         Map* map,
         UINT8 sx,
@@ -28,11 +31,9 @@ void map_bg_load_chunk(
         UINT8 dy,
         UINT8 w,
         UINT8 h);
-//void map_get_coord(UINT16* x, UINT16* y);
 void map_goto(Map* map, UINT8 x, UINT8 y);
 void map_scroll(Map* map, INT8 dx, INT8 dy);
 UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y);
-void map_cell_set_activated(Map* map, UINT8 x, UINT8 y);
 void map_free(Map* map);
 
 #endif
