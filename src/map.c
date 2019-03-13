@@ -3,6 +3,7 @@
 
 #include "./define.h"
 #include "./map.h"
+#include "./bgb_debug.h"
 
 // FIXME replace the tiles with grass -> {0x00, 0x01, 0x10, 0x11}
 UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x0E, 0x0F, 0x1E, 0x1F};
@@ -109,69 +110,64 @@ void map_bg_load_chunk(
 void map_goto(Map* map, UINT8 x, UINT8 y) {
     map->x = x - 9;
     map->y = y - 8;
-    map->_bg_layer_x = 8;
-    map->_bg_layer_y = 8;
-    move_bkg(8, 8);
-    map_bg_load_chunk(map, map->x - 1, map->y - 1, 0, 0, 22, 20);
+    map->_bg_layer_x = 0;
+    map->_bg_layer_y = 0;
+    move_bkg(0, 0);
+    map_bg_load_chunk(map, map->x, map->y, 0, 0, 20, 18);
 }
 
 // WARN:
 //    -1 <= dx <= 1
 //    -1 <= dy <= 1
 void map_scroll(Map* map, INT8 dx, INT8 dy) {
-    // Update coords (> 0)
-    if (dx == 1) map->_bg_layer_x += 1;
-    if (dy == 1) map->_bg_layer_y += 1;
-    // Load new tiles if necessary
-    if (dx && !(map->_bg_layer_x % 8)) {
-        if (dx == 1) {
-            map->x += 1;
-            map_bg_load_chunk(
-                    map,
-                    map->x + GB_SCREEN_WIDTH,
-                    map->y - 1,
-                    ((UINT8)((map->_bg_layer_x/8) + GB_SCREEN_WIDTH)) % GB_BG_WIDTH,
-                    ((UINT8)(map->_bg_layer_y/8 - 1)) % GB_BG_HEIGHT,
-                    1,
-                    GB_SCREEN_HEIGHT + 2);
-        } else {
-            map->x -= 1;
-            map_bg_load_chunk(
-                    map,
-                    map->x,
-                    map->y - 1,
-                    ((UINT8)(map->_bg_layer_x/8 - 1)) % GB_BG_WIDTH,
-                    ((UINT8)(map->_bg_layer_y/8 - 1)) % GB_BG_HEIGHT,
-                    1,
-                    GB_SCREEN_HEIGHT + 2);
-        }
+
+    if (dx == 1 && map->_bg_layer_x % 16 == 0) {
+        map_bg_load_chunk(
+                map,
+                map->x + GB_SCREEN_WIDTH,
+                map->y,
+                (map->_bg_layer_x / 8 + GB_SCREEN_WIDTH) % GB_BG_WIDTH,
+                (map->_bg_layer_y / 8) % GB_BG_HEIGHT,
+                2,
+                GB_SCREEN_HEIGHT);
+        map->x += 2;
+    } else if (dx == -1 && map->_bg_layer_x % 16 == 0) {
+        map_bg_load_chunk(
+                map,
+                map->x - 2,
+                map->y,
+                (GB_BG_WIDTH + map->_bg_layer_x / 8 - 2) % GB_BG_WIDTH,
+                (map->_bg_layer_y / 8) % GB_BG_HEIGHT,
+                2,
+                GB_SCREEN_HEIGHT);
+        map->x -= 2;
     }
-    if (dy && !(map->_bg_layer_y % 8)) {
-        if (dy == 1) {
-            map->y += 1;
-            map_bg_load_chunk(
-                    map,
-                    map->x - 1,
-                    map->y + GB_SCREEN_HEIGHT,
-                    ((UINT8)(map->_bg_layer_x/8 - 1)) % GB_BG_WIDTH,
-                    ((UINT8)(map->_bg_layer_y/8 + GB_SCREEN_HEIGHT)) % GB_BG_HEIGHT,
-                    GB_SCREEN_WIDTH + 2,
-                    1);
-        } else {
-            map->y -= 1;
-            map_bg_load_chunk(
-                    map,
-                    map->x - 1,
-                    map->y,
-                    ((UINT8)(map->_bg_layer_x/8 - 1)) % GB_BG_WIDTH,
-                    ((UINT8)(map->_bg_layer_y/8 - 1)) % GB_BG_HEIGHT,
-                    GB_SCREEN_WIDTH + 2,
-                    1);
-        }
+
+    if (dy == 1 && map->_bg_layer_y % 16 == 0) {
+        map_bg_load_chunk(
+                map,
+                map->x,
+                map->y + GB_SCREEN_HEIGHT,
+                (map->_bg_layer_x / 8) % GB_BG_WIDTH,
+                (map->_bg_layer_y / 8 + GB_SCREEN_HEIGHT) % GB_BG_HEIGHT,
+                GB_SCREEN_WIDTH,
+                2);
+        map->y += 2;
+    } else if (dy == -1 && map->_bg_layer_y % 16 == 0) {
+        map_bg_load_chunk(
+                map,
+                map->x,
+                map->y - 2,
+                (map->_bg_layer_x / 8) % GB_BG_WIDTH,
+                (GB_BG_HEIGHT + map->_bg_layer_y / 8 - 2) % GB_BG_HEIGHT,
+                GB_SCREEN_WIDTH,
+                2);
+        map->y -= 2;
     }
-    // Update coords (<0)
-    if (dx == -1) map->_bg_layer_x -= 1;
-    if (dy == -1) map->_bg_layer_y -= 1;
+
+    map->_bg_layer_x += dx;
+    map->_bg_layer_y += dy;
+
     // Scroll
     scroll_bkg(dx, dy);
 }
@@ -186,7 +182,8 @@ UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y) {
         return TRUE;
     }
     // Check Patch map
-    return map_cell_is_activated(map, x, y);
+    /*return map_cell_is_activated(map, x, y);*/
+    return FALSE;
 }
 
 void map_free(Map* map) {
