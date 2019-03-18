@@ -20,9 +20,9 @@ struct Map {
 typedef struct Map Map;
 
 Map* map_new(UINT8* bg_map, UINT8 bg_map_width, UINT8 bg_map_height);
+inline void map_cell_patch(Map* map, UINT8 x, UINT8 y);
 inline UINT8 map_cell_is_activated(Map* map, UINT8 x, UINT8 y);
 void map_cell_set_activated(Map* map, UINT8 x, UINT8 y);
-inline void map_cell_patch(Map* map, UINT8 x, UINT8 y);
 void map_bg_load_chunk(
         Map* map,
         UINT8 sx,

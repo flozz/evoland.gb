@@ -33,14 +33,21 @@ Map* map_new(UINT8* bg_map, UINT8 bg_map_width, UINT8 bg_map_height) {
     return map;
 }
 
+inline void map_cell_patch(Map* map, UINT8 x, UINT8 y) {
+    UINT8 screen_x;
+    UINT8 screen_y;
+    //                          map->_bg_layer_x / 8
+    screen_x = ((x - map->x + (map->_bg_layer_x >> 3)) % GB_BG_WIDTH) & 0xFE;
+    //                          map->_bg_layer_y / 8
+    screen_y = ((y - map->y + (map->_bg_layer_y >> 3)) % GB_BG_HEIGHT) & 0xFE;
+    set_bkg_tiles(screen_x, screen_y, 2, 2, MAP_ACTIVATED_CELL_PATCH);
+}
+
 inline UINT8 map_cell_is_activated(Map* map, UINT8 x, UINT8 y) {
-    UINT16 map_byte_offset;
-    UINT8 map_byte;
-    UINT8 map_bit_mask;
-    map_byte_offset = (y/2 * map->bg_map_width/2 + x/2) / 8;
-    map_byte = map->_bg_map_patch[map_byte_offset];
-    map_bit_mask = 0x01 << ((y/2 * map->bg_map_width/2 + x/2) % 8);
-    return map_byte & map_bit_mask;
+    //         =  y/2 * map->bg_map_width/2 + x/2
+    UINT16 tmp = (y >> 1) * (map->bg_map_width >> 1) + (x >> 1);
+    //     map->_bg_map_patch[tmp/8]               (tmp % 8)
+    return map->_bg_map_patch[tmp >> 3] & (0x01 << (tmp & 7));
 }
 
 void map_cell_set_activated(Map* map, UINT8 x, UINT8 y) {
@@ -55,16 +62,27 @@ void map_cell_set_activated(Map* map, UINT8 x, UINT8 y) {
     map_cell_patch(map, x, y);
 }
 
-inline void map_cell_patch(Map* map, UINT8 x, UINT8 y) {
-    UINT8 screen_x;
-    UINT8 screen_y;
-    screen_x = ((x - map->x + map->_bg_layer_x/8) % GB_BG_WIDTH) & 0xFE;
-    screen_y = ((y - map->y + map->_bg_layer_y/8) % GB_BG_HEIGHT) | 0x01;
-    if (screen_y == GB_BG_HEIGHT - 1) {
-        set_bkg_tiles(screen_x, screen_y, 2, 1, MAP_ACTIVATED_CELL_PATCH);
-        set_bkg_tiles(screen_x, 0, 2, 1, MAP_ACTIVATED_CELL_PATCH + 2);
-    } else {
-        set_bkg_tiles(screen_x, screen_y, 2, 2, MAP_ACTIVATED_CELL_PATCH);
+inline void _map_bg_load_chunk(
+        Map* map,
+        UINT8 sx,
+        UINT8 sy,
+        UINT8 dx,
+        UINT8 dy,
+        UINT8 w,
+        UINT8 h) {
+    UINT8 y;
+    UINT8 x;
+    UINT16 offset;
+    UINT8* lptr = NULL;
+    for (y = 0 ; y != h ; y++) {
+        offset = (sy + y) * map->bg_map_width + sx;
+        lptr = map->bg_map + offset;
+        set_bkg_tiles(dx, (dy + y) % GB_BG_HEIGHT, w, 1, lptr);
+        for (x = 0 ; x != w ; x += 2) {
+            if (map_cell_is_activated(map, sx + x, sy + y)) {
+                map_cell_patch(map, sx + x, sy + y);
+            }
+        }
     }
 }
 
@@ -76,12 +94,9 @@ void map_bg_load_chunk(
         UINT8 dy,
         UINT8 w,
         UINT8 h) {
-    UINT8 y;
-    UINT16 offset;
-    UINT8* lptr = NULL;
 
     if (dx + w > GB_BG_WIDTH) {
-        map_bg_load_chunk(
+        _map_bg_load_chunk(
                 map,
                 sx,
                 sy,
@@ -89,7 +104,7 @@ void map_bg_load_chunk(
                 dy,
                 GB_BG_WIDTH - dx,
                 h);
-        map_bg_load_chunk(
+        _map_bg_load_chunk(
                 map,
                 sx + (GB_BG_WIDTH - dx),
                 sy,
@@ -98,18 +113,14 @@ void map_bg_load_chunk(
                 w - (GB_BG_WIDTH - dx),
                 h);
     } else {
-        for (y = 0 ; y < h ; y++) {
-            offset = (sy + y) * map->bg_map_width + sx;
-            lptr = map->bg_map + offset;
-            set_bkg_tiles(dx, (dy + y) % GB_BG_HEIGHT, w, 1, lptr);
-        }
+        _map_bg_load_chunk( map, sx, sy, dx, dy, w, h);
     }
 }
 
 // Given coordinates represents the center of the screen (FIXME)
 void map_goto(Map* map, UINT8 x, UINT8 y) {
-    map->x = x - 9;
-    map->y = y - 8;
+    map->x = x - GB_SCREEN_CENTER_X;
+    map->y = y - GB_SCREEN_CENTER_Y;
     map->_bg_layer_x = 0;
     map->_bg_layer_y = 0;
     move_bkg(0, 0);
@@ -121,45 +132,57 @@ void map_goto(Map* map, UINT8 x, UINT8 y) {
 //    -1 <= dy <= 1
 void map_scroll(Map* map, INT8 dx, INT8 dy) {
 
-    if (dx == 1 && map->_bg_layer_x % 16 == 0) {
+    //              map->_bg_layer_x % 16
+    if (dx == 1 && (map->_bg_layer_x & 15) == 0) {
         map_bg_load_chunk(
                 map,
                 map->x + GB_SCREEN_WIDTH,
                 map->y,
-                (map->_bg_layer_x / 8 + GB_SCREEN_WIDTH) % GB_BG_WIDTH,
-                (map->_bg_layer_y / 8) % GB_BG_HEIGHT,
+                // map->_bg_layer_x / 8
+                ((map->_bg_layer_x >> 3) + GB_SCREEN_WIDTH) % GB_BG_WIDTH,
+                // map->_bg_layer_y / 8
+                (map->_bg_layer_y >> 3) % GB_BG_HEIGHT,
                 2,
                 GB_SCREEN_HEIGHT);
         map->x += 2;
-    } else if (dx == -1 && map->_bg_layer_x % 16 == 0) {
+    //                      map->_bg_layer_x % 16
+    } else if (dx == -1 && (map->_bg_layer_x & 15) == 0) {
         map_bg_load_chunk(
                 map,
                 map->x - 2,
                 map->y,
-                (GB_BG_WIDTH + map->_bg_layer_x / 8 - 2) % GB_BG_WIDTH,
-                (map->_bg_layer_y / 8) % GB_BG_HEIGHT,
+                //              map->_bg_layer_x / 8
+                (GB_BG_WIDTH + (map->_bg_layer_x >> 3) - 2) % GB_BG_WIDTH,
+                // map->_bg_layer_y / 8
+                (map->_bg_layer_y >> 3) % GB_BG_HEIGHT,
                 2,
                 GB_SCREEN_HEIGHT);
         map->x -= 2;
     }
 
-    if (dy == 1 && map->_bg_layer_y % 16 == 0) {
+    //              map->_bg_layer_y % 16
+    if (dy == 1 && (map->_bg_layer_y & 15) == 0) {
         map_bg_load_chunk(
                 map,
                 map->x,
                 map->y + GB_SCREEN_HEIGHT,
-                (map->_bg_layer_x / 8) % GB_BG_WIDTH,
-                (map->_bg_layer_y / 8 + GB_SCREEN_HEIGHT) % GB_BG_HEIGHT,
+                // map->_bg_layer_x / 8
+                (map->_bg_layer_x >> 3) % GB_BG_WIDTH,
+                // map->_bg_layer_y / 8
+                ((map->_bg_layer_y >> 3) + GB_SCREEN_HEIGHT) % GB_BG_HEIGHT,
                 GB_SCREEN_WIDTH,
                 2);
         map->y += 2;
-    } else if (dy == -1 && map->_bg_layer_y % 16 == 0) {
+    //                      map->_bg_layer_y % 16
+    } else if (dy == -1 && (map->_bg_layer_y & 15) == 0) {
         map_bg_load_chunk(
                 map,
                 map->x,
                 map->y - 2,
-                (map->_bg_layer_x / 8) % GB_BG_WIDTH,
-                (GB_BG_HEIGHT + map->_bg_layer_y / 8 - 2) % GB_BG_HEIGHT,
+                // map->_bg_layer_x / 8
+                (map->_bg_layer_x >> 3) % GB_BG_WIDTH,
+                //               map->_bg_layer_y / 8
+                (GB_BG_HEIGHT + (map->_bg_layer_y >> 3) - 2) % GB_BG_HEIGHT,
                 GB_SCREEN_WIDTH,
                 2);
         map->y -= 2;
@@ -182,8 +205,8 @@ UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y) {
         return TRUE;
     }
     // Check Patch map
-    /*return map_cell_is_activated(map, x, y);*/
-    return FALSE;
+    return map_cell_is_activated(map, x, y);
+    /*return FALSE;*/
 }
 
 void map_free(Map* map) {
