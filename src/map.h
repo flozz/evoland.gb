@@ -5,6 +5,8 @@
 
 #define MAP_CELL_SIZE 16
 #define MAP_WALKABLE_THRESHOLD 0x60
+#define MAP_OBJECT_CHEST 0x86
+#define MAP_OBJECT_BUSH  0xA6
 
 struct Map {
     UINT8 x;
@@ -34,6 +36,8 @@ void map_bg_load_chunk(
 void map_goto(Map* map, UINT8 x, UINT8 y);
 void map_scroll(Map* map, INT8 dx, INT8 dy);
 UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y);
+UINT8 map_cell_is_chest(Map* map, UINT8 x, UINT8 y);
+UINT8 map_cell_is_bush(Map* map, UINT8 x, UINT8 y);
 void map_free(Map* map);
 
 #endif

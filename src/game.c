@@ -33,6 +33,7 @@ void game_main() {
     UINT8 next_cell_x;
     UINT8 next_cell_y;
     UINT8 keys;
+    UINT8 last_keys = 0x00;
 
     while (TRUE) {
         dx = 0;
@@ -47,7 +48,13 @@ void game_main() {
         next_cell_x = _game_map->x + GB_SCREEN_CENTER_X + _game_player->dx * 2;
         next_cell_y = _game_map->y + GB_SCREEN_CENTER_Y + _game_player->dy * 2;
 
-        if (keys & J_A) {
+        // Cut bushes (TODO: only if sword found)
+        if (keys & J_A && !(last_keys & J_A) && map_cell_is_bush(_game_map, next_cell_x, next_cell_y)) {
+            map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
+        }
+
+        // Chest  (TODO should be activated by D-PAD)
+        if (keys & J_A && !(last_keys & J_A) && map_cell_is_chest(_game_map, next_cell_x, next_cell_y)) {
             map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
         }
 
@@ -57,6 +64,9 @@ void game_main() {
 
         player_update(_game_player, _game_map);
         sprite16anim_update();
+
+        last_keys = keys;
+
         wait_vbl_done();
     }
 }

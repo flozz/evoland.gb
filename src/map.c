@@ -5,8 +5,8 @@
 #include "./map.h"
 #include "./bgb_debug.h"
 
-// FIXME replace the tiles with grass -> {0x00, 0x01, 0x10, 0x11}
-UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x0E, 0x0F, 0x1E, 0x1F};
+UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x0E, 0x0F, 0x1E, 0x1F};  // FIXME debug
+/*UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x00, 0x01, 0x10, 0x11};*/
 
 Map* map_new(UINT8* bg_map, UINT8 bg_map_width, UINT8 bg_map_height) {
     Map* map = malloc(sizeof(Map));
@@ -207,6 +207,22 @@ UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y) {
     // Check Patch map
     return map_cell_is_activated(map, x, y);
     /*return FALSE;*/
+}
+
+UINT8 map_cell_is_chest(Map* map, UINT8 x, UINT8 y) {
+    UINT16 tile_offset;
+    UINT8 tile_id;
+    tile_offset = y * map->bg_map_width + x;
+    tile_id = map->bg_map[tile_offset];
+    return tile_id == MAP_OBJECT_CHEST;
+}
+
+UINT8 map_cell_is_bush(Map* map, UINT8 x, UINT8 y) {
+    UINT16 tile_offset;
+    UINT8 tile_id;
+    tile_offset = y * map->bg_map_width + x;
+    tile_id = map->bg_map[tile_offset];
+    return tile_id == MAP_OBJECT_BUSH;
 }
 
 void map_free(Map* map) {
