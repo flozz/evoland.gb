@@ -36,10 +36,10 @@ Map* map_new(UINT8* bg_map, UINT8 bg_map_width, UINT8 bg_map_height) {
 inline void map_cell_patch(Map* map, UINT8 x, UINT8 y) {
     UINT8 screen_x;
     UINT8 screen_y;
-    //                          map->_bg_layer_x / 8
-    screen_x = ((x - map->x + (map->_bg_layer_x >> 3)) % GB_BG_WIDTH) & 0xFE;
-    //                          map->_bg_layer_y / 8
-    screen_y = ((y - map->y + (map->_bg_layer_y >> 3)) % GB_BG_HEIGHT) & 0xFE;
+    //                                 map->_bg_layer_x / 8
+    screen_x = (((UINT8)(x - map->x + (map->_bg_layer_x >> 3))) % GB_BG_WIDTH) & 0xFE;
+    //                                 map->_bg_layer_y / 8
+    screen_y = (((UINT8)(y - map->y + (map->_bg_layer_y >> 3))) % GB_BG_HEIGHT) & 0xFE;
     set_bkg_tiles(screen_x, screen_y, 2, 2, MAP_ACTIVATED_CELL_PATCH);
 }
 
