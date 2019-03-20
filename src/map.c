@@ -78,6 +78,10 @@ inline void _map_bg_load_chunk(
         offset = (sy + y) * map->bg_map_width + sx;
         lptr = map->bg_map + offset;
         set_bkg_tiles(dx, (dy + y) % GB_BG_HEIGHT, w, 1, lptr);
+        //  y % 2
+        if (y & 1 == 0) {
+            continue;
+        }
         for (x = 0 ; x != w ; x += 2) {
             if (map_cell_is_activated(map, sx + x, sy + y)) {
                 map_cell_patch(map, sx + x, sy + y);
@@ -113,7 +117,7 @@ void map_bg_load_chunk(
                 w - (GB_BG_WIDTH - dx),
                 h);
     } else {
-        _map_bg_load_chunk( map, sx, sy, dx, dy, w, h);
+        _map_bg_load_chunk(map, sx, sy, dx, dy, w, h);
     }
 }
 
@@ -206,7 +210,6 @@ UINT8 map_cell_is_walkable(Map* map, UINT8 x, UINT8 y) {
     }
     // Check Patch map
     return map_cell_is_activated(map, x, y);
-    /*return FALSE;*/
 }
 
 UINT8 map_cell_is_chest(Map* map, UINT8 x, UINT8 y) {
