@@ -14,13 +14,17 @@ Player* player_new() {
         return NULL;
     }
 
-    player->sprite = sprite16_new(0, _PLAYER_FRAMES_DOWN[0], 80, 80);
+    player->sprite = sprite16_new(
+            0,
+            _PLAYER_FRAMES_DOWN[0],
+            GB_SCREEN_CENTER_X * GB_TILE_SIZE + GB_SPRITE_OFFSET_X,
+            GB_SCREEN_CENTER_Y * GB_TILE_SIZE + GB_SPRITE_OFFSET_Y);
     player->anim_down = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_DOWN, FALSE);
     player->anim_up = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_UP, FALSE);
     player->anim_right = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_RIGHT, FALSE);
     player->anim_left = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_RIGHT, TRUE);
-    player->screen_x = PLAYER_CENTER_X;
-    player->screen_y = PLAYER_CENTER_Y;
+    player->screen_x = GB_SCREEN_CENTER_X;
+    player->screen_y = GB_SCREEN_CENTER_Y;
     player->dx = 0;
     player->dy = 1;
     player->_walk_to_count = 0;

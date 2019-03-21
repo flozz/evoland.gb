@@ -5,9 +5,6 @@
 #include "./sprite16.h"
 #include "./sprite16-anim.h"
 
-#define PLAYER_CENTER_X 9
-#define PLAYER_CENTER_Y 8
-
 struct Player {
     Sprite16* sprite;
     Sprite16Anim* anim_down;
