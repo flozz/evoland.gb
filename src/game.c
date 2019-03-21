@@ -48,14 +48,15 @@ void game_main() {
         next_cell_x = _game_map->x + GB_SCREEN_CENTER_X + _game_player->dx * 2;
         next_cell_y = _game_map->y + GB_SCREEN_CENTER_Y + _game_player->dy * 2;
 
-        // Cut bushes (TODO: only if sword found)
-        if (keys & J_A && !(last_keys & J_A) && map_cell_is_bush(_game_map, next_cell_x, next_cell_y)) {
-            map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
-        }
+        if ((_game_map->_bg_layer_x & 15) == 0 && (_game_map->_bg_layer_y & 15) == 0) {
+            // Cut bushes (TODO: only if sword found)
+            if (keys & J_A && !(last_keys & J_A) && map_cell_is_bush(_game_map, next_cell_x, next_cell_y)) {
+                map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
+            }
 
-        // Chest  (TODO should be activated by D-PAD)
-        if (keys & J_A && !(last_keys & J_A) && map_cell_is_chest(_game_map, next_cell_x, next_cell_y)) {
-            map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
+            if (keys & GB_J_DPAD && map_cell_is_chest(_game_map, next_cell_x, next_cell_y)) {
+                map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
+            }
         }
 
         if (dx || dy) {

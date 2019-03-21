@@ -14,3 +14,6 @@
 
 #define GB_SPRITE_OFFSET_X  8
 #define GB_SPRITE_OFFSET_Y 16
+
+// Any D-PAD button (= J_DOWN|J_UP|J_LEFT|J_RIGHT)
+#define GB_J_DPAD        0x0F

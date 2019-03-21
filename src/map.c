@@ -5,8 +5,8 @@
 #include "./map.h"
 #include "./bgb_debug.h"
 
-UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x0E, 0x0F, 0x1E, 0x1F};  // FIXME debug
-/*UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x00, 0x01, 0x10, 0x11};*/
+/*UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x0E, 0x0F, 0x1E, 0x1F};  // FIXME debug*/
+UINT8 MAP_ACTIVATED_CELL_PATCH[] = {0x00, 0x01, 0x10, 0x11};
 
 Map* map_new(UINT8* bg_map, UINT8 bg_map_width, UINT8 bg_map_height) {
     Map* map = malloc(sizeof(Map));
