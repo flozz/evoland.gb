@@ -26,6 +26,7 @@ Sprite16Anim* sprite16anim_new(
         UINT8* frames,
         UINT8 xflip);
 void sprite16anim_play(Sprite16Anim* anim);
+void sprite16anim_pause(Sprite16Anim* anim);
 void sprite16anim_stop(Sprite16Anim* anim);
 void sprite16anim_update();
 void sprite16anim_free(Sprite16Anim* anim);
