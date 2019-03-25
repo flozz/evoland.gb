@@ -11,6 +11,10 @@ UINT8 _PLAYER_FRAMES_HIT_DOWN[] = {0x10, 0x14};
 UINT8 _PLAYER_FRAMES_HIT_UP[] = {0x28, 0x2C};
 UINT8 _PLAYER_FRAMES_HIT_RIGHT[] = {0x48, 0x50};
 
+UINT8 _PLAYER_FRAMES_SWORD_DOWN[] = {0x30, 0x34};
+UINT8 _PLAYER_FRAMES_SWORD_UP[] = {0x08, 0x0C};
+UINT8 _PLAYER_FRAMES_SWORD_RIGHT[] = {0x4C, 0x54};
+
 Player* player_new() {
     Player* player = malloc(sizeof(Player));
 
@@ -19,10 +23,16 @@ Player* player_new() {
     }
 
     player->sprite = sprite16_new(
-            0,
+            SPRITE_PLAYER,
             _PLAYER_FRAMES_DOWN[0],
             GB_SCREEN_CENTER_X * GB_TILE_SIZE + GB_SPRITE_OFFSET_X,
             GB_SCREEN_CENTER_Y * GB_TILE_SIZE + GB_SPRITE_OFFSET_Y);
+
+    player->sword = sprite16_new(
+            SPRITE_SWORD,
+            _PLAYER_FRAMES_SWORD_DOWN[0],
+            0,
+            0);
 
     player->anim_down = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_DOWN, FALSE);
     player->anim_up = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_UP, FALSE);
@@ -33,6 +43,11 @@ Player* player_new() {
     player->anim_hit_up = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_HIT_UP, FALSE);
     player->anim_hit_right = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_HIT_RIGHT, FALSE);
     player->anim_hit_left = sprite16anim_new(player->sprite, 6, 2, _PLAYER_FRAMES_HIT_RIGHT, TRUE);
+
+    player->anim_sword_down = sprite16anim_new(player->sword, 6, 2, _PLAYER_FRAMES_SWORD_DOWN, FALSE);
+    player->anim_sword_up = sprite16anim_new(player->sword, 6, 2, _PLAYER_FRAMES_SWORD_UP, FALSE);
+    player->anim_sword_right = sprite16anim_new(player->sword, 6, 2, _PLAYER_FRAMES_SWORD_RIGHT, FALSE);
+    player->anim_sword_left = sprite16anim_new(player->sword, 6, 2, _PLAYER_FRAMES_SWORD_RIGHT, TRUE);
 
     player->screen_x = GB_SCREEN_CENTER_X;
     player->screen_y = GB_SCREEN_CENTER_Y;
@@ -120,21 +135,44 @@ void player_hit(Player* player) {
 
     if (player->_anim_current == player->anim_down) {
         player->_anim_current = player->anim_hit_down;
+        player->_anim_sword_current = player->anim_sword_down;
+        sprite16_set_position(
+                player->sword,
+                GB_SPRITE_OFFSET_X + player->screen_x * GB_TILE_SIZE,
+                GB_SPRITE_OFFSET_Y + (player->screen_y + 2) * GB_TILE_SIZE);
     } else if (player->_anim_current == player->anim_up) {
         player->_anim_current = player->anim_hit_up;
+        player->_anim_sword_current = player->anim_sword_up;
+        sprite16_set_position(
+                player->sword,
+                GB_SPRITE_OFFSET_X + player->screen_x * GB_TILE_SIZE,
+                GB_SPRITE_OFFSET_Y + (player->screen_y - 2) * GB_TILE_SIZE);
     } else if (player->_anim_current == player->anim_right) {
         player->_anim_current = player->anim_hit_right;
+        player->_anim_sword_current = player->anim_sword_right;
+        sprite16_set_position(
+                player->sword,
+                GB_SPRITE_OFFSET_X + (player->screen_x + 2) * GB_TILE_SIZE,
+                GB_SPRITE_OFFSET_Y + player->screen_y * GB_TILE_SIZE);
     } else if (player->_anim_current == player->anim_left) {
         player->_anim_current = player->anim_hit_left;
+        player->_anim_sword_current = player->anim_sword_left;
+        sprite16_set_position(
+                player->sword,
+                GB_SPRITE_OFFSET_X + (player->screen_x - 2) * GB_TILE_SIZE,
+                GB_SPRITE_OFFSET_Y + player->screen_y * GB_TILE_SIZE);
     }
 
     sprite16anim_pause(player->_anim_paused);
     sprite16anim_play(player->_anim_current);
+    sprite16anim_play(player->_anim_sword_current);
 }
 
 void player_hit_end(Player* player) {
     player->_is_hitting = FALSE;
+    sprite16_hide(player->sword);
     sprite16anim_stop(player->_anim_current);
+    sprite16anim_stop(player->_anim_sword_current);
     player->_anim_current = player->_anim_paused;
     player->_anim_paused = NULL;
     sprite16anim_play(player->_anim_current);
