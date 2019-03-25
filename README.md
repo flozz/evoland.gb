@@ -6,8 +6,7 @@
 
 ## Sprites
 
-| Range   | Description |
-|---------|-------------|
-| 0 - 1   | Player      |
-| 2 - 19  | not used    |
-| 20 - 39 | Object pool |
+| Sprit id | Description  |
+|----------|--------------|
+| 0, 1     | Player       |
+| 2, 3     | Player Sword |

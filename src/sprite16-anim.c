@@ -31,6 +31,11 @@ Sprite16Anim* sprite16anim_new(
     anim->frame_count = frame_count;
     anim->frames = frames;
     anim->flipx = flipx;
+
+    // Reset anim
+    anim->_next_frame_id = 1 % anim->frame_count;
+    anim->_frame_counter = 0;
+
     return anim;
 }
 
@@ -51,12 +56,19 @@ void sprite16anim_play(Sprite16Anim* anim) {
         return;
     }
 
-    anim->_next_frame_id = 1 % anim->frame_count;
-    anim->_frame_counter = 0;
-
     for (i = 0 ; i < SPRITE16ANIM_MAX ; i++) {
         if (_sprite16anim_playing[i] == NULL) {
             _sprite16anim_playing[i] = anim;
+            break;
+        }
+    }
+}
+
+void sprite16anim_pause(Sprite16Anim* anim) {
+    UINT8 i;
+    for (i = 0 ; i < SPRITE16ANIM_MAX ; i++) {
+        if (_sprite16anim_playing[i] == anim) {
+            _sprite16anim_playing[i] = NULL;
             break;
         }
     }
@@ -69,6 +81,9 @@ void sprite16anim_stop(Sprite16Anim* anim) {
             _sprite16anim_playing[i] = NULL;
             // Reset sprite to default frame
             sprite16_set_tile(anim->sprite, anim->frames[0]);
+            // Reset anim
+            anim->_next_frame_id = 1 % anim->frame_count;
+            anim->_frame_counter = 0;
             break;
         }
     }
