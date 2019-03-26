@@ -25,20 +25,20 @@ gassets:
 		--output-header-file=src/gassets/background.tileset.h \
 		--output-image=src/gassets/background.tileset.png \
 		--name BG_TILESET \
-		./background-tileset.png
+		./gassets/background-tileset.png
 	img2gb tilemap \
 		--output-c-file=src/gassets/background.tilemap.c \
 		--output-header-file=src/gassets/background.tilemap.h \
 		--name BG_TILEMAP \
 		src/gassets/background.tileset.png \
-		./background-tilemap.png
+		./gassets/background-tilemap.png
 	img2gb tileset \
 		--output-c-file=src/gassets/sprites.tileset.c \
 		--output-header-file=src/gassets/sprites.tileset.h \
 		--output-image=src/gassets/sprites.tileset.png \
 		--sprite8x16 \
 		--name SPRITES \
-		./sprites.png
+		./gassets/sprites.png
 
 gbdk-n-lib:
 	cd ./gbdk-n/ && make
