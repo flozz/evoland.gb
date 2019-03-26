@@ -19,6 +19,7 @@ $(PROG).gb: $(_OBJ)
 src/%.rel: src/%.c
 	$(CC) -o $@ -c $<
 
+.PHONY: gassets
 gassets:
 	img2gb tileset \
 		--output-c-file=src/gassets/background.tileset.c \
