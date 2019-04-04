@@ -31,7 +31,7 @@ gassets:
 		--output-c-file=src/gassets/background.tilemap.c \
 		--output-header-file=src/gassets/background.tilemap.h \
 		--name BG_TILEMAP \
-		src/gassets/background.tileset.png \
+		./src/gassets/background.tileset.png \
 		./gassets/background-tilemap.png
 	img2gb tileset \
 		--output-c-file=src/gassets/sprites.tileset.c \
@@ -40,6 +40,20 @@ gassets:
 		--sprite8x16 \
 		--name SPRITES \
 		./gassets/sprites.png
+	img2gb tileset \
+		--output-c-file=src/gassets/evoland_logo.tileset.c \
+		--output-header-file=src/gassets/evoland_logo.tileset.h \
+		--output-image=src/gassets/evoland_logo.tileset.png \
+		--name EVOLAND_LOGO_TILESET \
+		--deduplicate \
+		./gassets/evoland-logo.png
+	img2gb tilemap \
+		--output-c-file=src/gassets/evoland_logo.tilemap.c \
+		--output-header-file=src/gassets/evoland_logo.tilemap.h \
+		--name EVOLAND_LOGO_TILEMAP \
+		./src/gassets/evoland_logo.tileset.png \
+		./gassets/evoland-logo.png
+
 
 gbdk-n-lib:
 	cd ./gbdk-n/ && make
