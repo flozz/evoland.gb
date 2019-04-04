@@ -3,7 +3,9 @@
 #include "./map.h"
 #include "./player.h"
 #include "./sprite16.h"
+#include "./text.h"
 #include "./bgb_debug.h"
+#include "./fx.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
@@ -12,19 +14,20 @@ Player* _game_player;
 Map* _game_map;
 
 void game_init() {
-    SHOW_BKG;
     SPRITES_8x16;
-    SHOW_SPRITES;
 
     palette_set_obp0(PALETTE_WHITE, PALETTE_WHITE, PALETTE_GRAY, PALETTE_BLACK);
 
     set_bkg_data(0, BG_TILESET_TILE_COUNT, BG_TILESET);
     set_sprite_data(0, SPRITES_TILE_COUNT, SPRITES);
+    text_load_font();
 
     _game_map = map_new(BG_TILEMAP, BG_TILEMAP_WIDTH, BG_TILEMAP_HEIGHT);
     map_goto(_game_map, 24, 46);
 
     _game_player = player_new();
+
+    SHOW_SPRITES;
 }
 
 void game_main() {
@@ -35,6 +38,7 @@ void game_main() {
     UINT8 keys;
     UINT8 last_keys = 0x00;
 
+    fx_bg_fade_in();
     while (TRUE) {
         dx = 0;
         dy = 0;
