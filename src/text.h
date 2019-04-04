@@ -17,6 +17,7 @@
 
 #define TEXT_TILE_BORDER       0xFE
 
+void text_load_font();
 inline void text_map_char(char c, UINT8* buff);
 UINT8* text_map_string(char* string, UINT8 width, UINT8 height);
 void text_free_map(UINT8* text);

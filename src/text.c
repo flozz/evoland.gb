@@ -2,8 +2,13 @@
 
 #include <gb/gb.h>
 
-#include "./define.h";
-#include "text.h"
+#include "./define.h"
+#include "./text.h"
+#include "./gassets/font.tileset.h"
+
+void text_load_font() {
+    set_bkg_data(TEXT_TILE_OFFSET, FONT_TILESET_TILE_COUNT, FONT_TILESET);
+}
 
 inline void text_map_char(char c, UINT8* buff) {
     if (c >= TEXT_CHAR_START && c <= TEXT_CHAR_END) {

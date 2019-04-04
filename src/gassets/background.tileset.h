@@ -4,7 +4,7 @@
 #define _BACKGROUND_TILESET_H
 
 extern const UINT8 BG_TILESET[];
-#define BG_TILESET_TILE_COUNT 256
+#define BG_TILESET_TILE_COUNT 192
 
 
 #endif

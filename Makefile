@@ -53,6 +53,12 @@ gassets:
 		--name EVOLAND_LOGO_TILEMAP \
 		./src/gassets/evoland_logo.tileset.png \
 		./gassets/evoland-logo.png
+	img2gb tileset \
+		--output-c-file=src/gassets/font.tileset.c \
+		--output-header-file=src/gassets/font.tileset.h \
+		--output-image=src/gassets/font.tileset.png \
+		--name FONT_TILESET \
+		./gassets/font.png
 
 
 gbdk-n-lib:
