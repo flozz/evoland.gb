@@ -49,8 +49,13 @@ void game_main() {
         if (keys & J_LEFT) dx -= 1;
         if (keys & J_RIGHT) dx += 1;
 
-        next_cell_x = _game_map->x + GB_SCREEN_CENTER_X + _game_player->dx * 2;
-        next_cell_y = _game_map->y + GB_SCREEN_CENTER_Y + _game_player->dy * 2;
+        if (dx || dy) {
+            next_cell_x = _game_map->x + GB_SCREEN_CENTER_X + dx * 2;
+            next_cell_y = _game_map->y + GB_SCREEN_CENTER_Y + dy * 2;
+        } else {
+            next_cell_x = _game_map->x + GB_SCREEN_CENTER_X + _game_player->dx * 2;
+            next_cell_y = _game_map->y + GB_SCREEN_CENTER_Y + _game_player->dy * 2;
+        }
 
         //  (_game_map->_bg_layer_x % 16)         (_game_map->_bg_layer_y % 16)
         if ((_game_map->_bg_layer_x & 15) == 0 && (_game_map->_bg_layer_y & 15) == 0) {
@@ -59,8 +64,13 @@ void game_main() {
                 map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
             }
 
-            if (keys & GB_J_DPAD && map_cell_is_chest(_game_map, next_cell_x, next_cell_y)) {
+            if (keys & (GB_J_DPAD|J_A) && map_cell_is_chest(_game_map, next_cell_x, next_cell_y)) {
                 map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
+                text_show_message("Oh! A chest!\0", 4);  // FIXME
+
+                // cancel hit / walk actions
+                wait_vbl_done();
+                continue;
             }
         }
 
