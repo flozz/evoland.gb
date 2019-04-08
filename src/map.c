@@ -217,7 +217,7 @@ UINT8 map_cell_is_chest(Map* map, UINT8 x, UINT8 y) {
     UINT8 tile_id;
     tile_offset = y * map->bg_map_width + x;
     tile_id = map->bg_map[tile_offset];
-    return tile_id == MAP_OBJECT_CHEST;
+    return tile_id == MAP_OBJECT_CHEST && !map_cell_is_activated(map, x, y);
 }
 
 UINT8 map_cell_is_bush(Map* map, UINT8 x, UINT8 y) {
