@@ -6,6 +6,7 @@
 #include "./text.h"
 #include "./bgb_debug.h"
 #include "./fx.h"
+#include "./chest.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
@@ -66,7 +67,7 @@ void game_main() {
 
             if (keys & (GB_J_DPAD|J_A) && map_cell_is_chest(_game_map, next_cell_x, next_cell_y)) {
                 map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
-                text_show_message("Oh! A chest!\0", 4);  // FIXME
+                chest_activate(chest_get_id(next_cell_x, next_cell_y));
 
                 // cancel hit / walk actions
                 wait_vbl_done();
