@@ -60,6 +60,13 @@ gassets:
 		--name FONT_TILESET \
 		./gassets/font.png
 
+objects:
+	./scripts/extract-objects.py \
+		Chests \
+		CHESTS \
+		./gassets/background-tilemap.tmx \
+		./src/objects/chests.objects.c \
+		./src/objects/chests.objects.h
 
 gbdk-n-lib:
 	cd ./gbdk-n/ && make
