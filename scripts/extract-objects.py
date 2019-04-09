@@ -50,7 +50,7 @@ def generate_h(objects, variable_name, h_file_name):
     result += "external const UINT8 %s[];\n" % variable_name.upper()
     result += "#define %s_COUNT %i;\n" % (variable_name.upper(), len(objects))
     result += "\n"
-    result += "#endif"
+    result += "#endif\n"
     return result
 
 
