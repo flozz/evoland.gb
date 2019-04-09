@@ -6,7 +6,7 @@
 
 #include <types.h>
 
-external const UINT8 CHESTS[];
+extern const UINT8 CHESTS[];
 #define CHESTS_COUNT 6;
 
 #endif
