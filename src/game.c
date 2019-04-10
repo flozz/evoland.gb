@@ -12,6 +12,7 @@
 #include "./bgb_debug.h"
 #include "./fx.h"
 #include "./chest.h"
+#include "./locales/messages.h"
 #include "./gassets/background.tileset.h"
 #include "./gassets/background.tilemap.h"
 #include "./gassets/sprites.tileset.h"
@@ -52,7 +53,7 @@ void game_main() {
     fx_bg_fade_in();
 
     _game_state->dpad_mask = J_RIGHT;
-    text_show_message("D-PAD Right\0", 4);
+    text_show_message(MSG_0, 4);
 
     while (TRUE) {
         dx = 0;

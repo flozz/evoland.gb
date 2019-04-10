@@ -2,19 +2,26 @@ PROG = evoland
 CC = ./gbdk-n/bin/gbdk-n-compile.sh -DDEBUG
 LL = ./gbdk-n/bin/gbdk-n-link.sh
 MR = ./gbdk-n/bin/gbdk-n-make-rom.sh
-_OBJ = $(patsubst %.c,%.rel,$(wildcard src/*.c)) $(patsubst %.c,%.rel,$(wildcard src/*/*.c))
+_OBJ = $(patsubst %.c,%.rel,$(wildcard src/*.c)) $(patsubst %.c,%.rel,$(wildcard src/gassets/*.c)) $(patsubst %.c,%.rel,$(wildcard src/objects/*.c))
+_OBJ_EN = $(patsubst %.c,%.rel,$(wildcard src/locales/*.en.c))
+_OBJ_FR = $(patsubst %.c,%.rel,$(wildcard src/locales/*.fr.c))
 
 all: build
 
 run: build
-	mednafen $(PROG).gb
+	mednafen $(PROG)_en.gb
 
-build: $(PROG).gb
+build: $(PROG)_en.gb $(PROG)_fr.gb
 
-$(PROG).gb: $(_OBJ)
-	$(LL) -o $(PROG).ihx $^
-	$(MR) $(PROG).ihx $(PROG).gb
-	./maptosym/maptosym.py $(PROG).map
+$(PROG)_en.gb: $(_OBJ) $(_OBJ_EN)
+	$(LL) -o $(PROG)_en.ihx $^
+	$(MR) $(PROG)_en.ihx $(PROG)_en.gb
+	./maptosym/maptosym.py $(PROG)_en.map
+
+$(PROG)_fr.gb: $(_OBJ) $(_OBJ_FR)
+	$(LL) -o $(PROG)_fr.ihx $^
+	$(MR) $(PROG)_fr.ihx $(PROG)_fr.gb
+	./maptosym/maptosym.py $(PROG)_fr.map
 
 src/%.rel: src/%.c
 	$(CC) -o $@ -c $<
@@ -80,9 +87,9 @@ clean:
 	rm -rf src/*/*.lst
 	rm -rf src/*/*.sym
 	rm -rf src/*/*.asm
-	rm -rf $(PROG).gb
-	rm -rf $(PROG).ihx
-	rm -rf $(PROG).map
-	rm -rf $(PROG).sym
-	rm -rf $(PROG).noi
-	rm -rf $(PROG).lk
+	rm -rf $(PROG)_*.gb
+	rm -rf $(PROG)_*.ihx
+	rm -rf $(PROG)_*.map
+	rm -rf $(PROG)_*.sym
+	rm -rf $(PROG)_*.noi
+	rm -rf $(PROG)_*.lk
