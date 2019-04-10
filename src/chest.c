@@ -3,6 +3,7 @@
 #include "./define.h"
 #include "./game.h"
 #include "./text.h"
+#include "./locales/messages.h"
 #include "./objects/chests.objects.h"
 
 
@@ -23,11 +24,11 @@ UINT8 chest_get_id(UINT8 x, UINT8 y) {
 void chest_activate(GameState* game_state, UINT8 chest_id) {
     switch(chest_id) {
         case 0:
-            text_show_message("D-PAD Left\0", 4);  // FIXME
+            text_show_message(MSG_1, 4);
             game_state->dpad_mask |= J_LEFT;
             break;
         case 1:
-            text_show_message("2D moves\0", 4);  // FIXME
+            text_show_message(MSG_2, 4);
             game_state->dpad_mask |= J_UP | J_DOWN;
             break;
         case 5:
