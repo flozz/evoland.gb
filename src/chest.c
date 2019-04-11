@@ -31,8 +31,17 @@ void chest_activate(GameState* game_state, UINT8 chest_id) {
             text_show_message(MSG_2, 4);
             game_state->dpad_mask |= J_UP | J_DOWN;
             break;
+        case 2:
+            text_show_message(MSG_3, 4);
+            break;
+        case 3:
+            text_show_message(MSG_4, 4);
+            break;
+        case 4:
+            text_show_message(MSG_5, 4);
+            break;
         case 5:
-            text_show_message("Sword\0", 4);  // FIXME
+            text_show_message(MSG_6, 4);
             game_state->player_has_sword = TRUE;
             break;
         default:
