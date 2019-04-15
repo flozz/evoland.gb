@@ -27,10 +27,13 @@ struct Player {
     Sprite16Anim* anim_sword_right;
     Sprite16Anim* anim_sword_left;
 
-    UINT8 screen_x;  // x position on screen space (in tile)
-    UINT8 screen_y;  // y position on screen space (in tile)
-    UINT8 dx;        // Direction x
-    UINT8 dy;        // Direction y
+    UINT8 screen_x;     // x position on screen space (in tile)
+    UINT8 screen_y;     // y position on screen space (in tile)
+    UINT8 screen_x_px;  // x position on screen space (in px)
+    UINT8 screen_y_px;  // y position on screen space (in px)
+    INT8 dx;            // Direction x
+    INT8 dy;            // Direction y
+    UINT8 smooth_scrolling;
 
     UINT8 _walk_to_count;
     UINT8 _hit_animation_frame_count;
@@ -49,6 +52,6 @@ void player_walk_to_cell(Player* player, Map* map, INT8 dx, INT8 dy);
 void player_hit(Player* player);
 void player_hit_end(Player* player);
 void player_update(Player* player, Map* map);
-void _player_free(Player* player);
+void player_free(Player* player);
 
 #endif

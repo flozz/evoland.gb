@@ -39,6 +39,7 @@ void chest_activate(GameState* game_state, UINT8 chest_id) {
             break;
         case 4:
             text_show_message(MSG_5, 4);
+            game_state->player->smooth_scrolling = TRUE;
             break;
         case 5:
             text_show_message(MSG_6, 4);

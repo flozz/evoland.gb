@@ -51,8 +51,11 @@ Player* player_new() {
 
     player->screen_x = GB_SCREEN_CENTER_X;
     player->screen_y = GB_SCREEN_CENTER_Y;
+    player->screen_x_px = GB_SCREEN_CENTER_X * GB_TILE_SIZE;
+    player->screen_y_px = GB_SCREEN_CENTER_Y * GB_TILE_SIZE;
     player->dx = 0;
     player->dy = 1;
+    player->smooth_scrolling = FALSE;
 
     player->_walk_to_count = 0;
     player->_hit_animation_frame_count = 0;
@@ -179,6 +182,7 @@ void player_hit_end(Player* player) {
 }
 
 void player_update(Player* player, Map* map) {
+    UINT8 i;
     // Sword action
     if (player->_is_hitting) {
         if (player->_hit_animation_frame_count) {
@@ -188,7 +192,7 @@ void player_update(Player* player, Map* map) {
         } else {
             player_hit_end(player);
         }
-    } else {
+    } else if (player->smooth_scrolling) {
         // Update animation
         if (!player->_is_walking) {
             sprite16anim_stop(player->_anim_current);
@@ -201,9 +205,47 @@ void player_update(Player* player, Map* map) {
         if (!player->_walk_to_count) {
             player->_is_walking = FALSE;
         }
+    } else {
+        // Update animation
+        if (!player->_is_walking) {
+            sprite16anim_stop(player->_anim_current);
+        }
+        // Move player
+        if (player->_walk_to_count) {
+            player->_walk_to_count -= 1;
+            player->screen_x_px += player->dx;
+            player->screen_y_px += player->dy;
+            sprite16_set_position(
+                    player->sprite,
+                    GB_SPRITE_OFFSET_X + player->screen_x_px,
+                    GB_SPRITE_OFFSET_Y + player->screen_y_px);
+            if (
+                    player->screen_y == 2 && player->dy == -1 ||
+                    player->screen_y == 12 && player->dy == 1 ||
+                    player->screen_x == 0 && player->dx == -1 ||
+                    player->screen_x == 16 && player->dx == 1
+                    ) {
+                for (i = (player->dy) ? 40 : 64 ; i ; i--) {
+                    map_scroll(map, player->dx, player->dy);
+                    map_scroll(map, player->dx, player->dy);
+                    player->screen_x_px += -2 * player->dx;
+                    player->screen_y_px += -2 * player->dy;
+                    sprite16_set_position(
+                            player->sprite,
+                            GB_SPRITE_OFFSET_X + player->screen_x_px,
+                            GB_SPRITE_OFFSET_Y + player->screen_y_px);
+                    wait_vbl_done();
+                }
+            }
+            player->screen_x = player->screen_x_px >> 3;
+            player->screen_y = player->screen_y_px >> 3;
+        }
+        if (!player->_walk_to_count) {
+            player->_is_walking = FALSE;
+        }
     }
 }
 
-void _player_free(Player* player) {
+void player_free(Player* player) {
     // TODO
 }

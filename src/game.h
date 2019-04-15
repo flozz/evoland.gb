@@ -3,9 +3,12 @@
 
 #include <types.h>
 
+#include "./player.h"
+
 struct GameState {
     UINT8 dpad_mask;
     UINT8 player_has_sword;
+    Player* player;
 };
 
 typedef struct GameState GameState;
