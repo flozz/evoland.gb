@@ -38,6 +38,7 @@ void game_init() {
     _game_state = malloc(sizeof(GameState));
     _game_state->dpad_mask = 0x00;
     _game_state->player_has_sword = FALSE;
+    _game_state->player = _game_player;
 
     SHOW_SPRITES;
 }
@@ -66,21 +67,30 @@ void game_main() {
         if (keys & J_RIGHT & _game_state->dpad_mask) dx += 1;
 
         if (dx || dy) {
-            next_cell_x = _game_map->x + GB_SCREEN_CENTER_X + dx * 2;
-            next_cell_y = _game_map->y + GB_SCREEN_CENTER_Y + dy * 2;
+            next_cell_x = _game_map->x + _game_player->screen_x + dx * 2;
+            next_cell_y = _game_map->y + _game_player->screen_y + dy * 2;
         } else {
-            next_cell_x = _game_map->x + GB_SCREEN_CENTER_X + _game_player->dx * 2;
-            next_cell_y = _game_map->y + GB_SCREEN_CENTER_Y + _game_player->dy * 2;
+            next_cell_x = _game_map->x + _game_player->screen_x + _game_player->dx * 2;
+            next_cell_y = _game_map->y + _game_player->screen_y + _game_player->dy * 2;
         }
 
         //  (_game_map->_bg_layer_x % 16)         (_game_map->_bg_layer_y % 16)
         if ((_game_map->_bg_layer_x & 15) == 0 && (_game_map->_bg_layer_y & 15) == 0) {
             // Cut bushes
-            if (keys & J_A && !(last_keys & J_A) && _game_state->player_has_sword && map_cell_is_bush(_game_map, next_cell_x, next_cell_y)) {
+            if (
+                    keys & J_A && !(last_keys & J_A) &&
+                    _game_state->player_has_sword &&
+                    map_cell_is_bush(_game_map, next_cell_x, next_cell_y)
+                ) {
                 map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
             }
 
-            if (keys & GB_J_DPAD & _game_state->dpad_mask && map_cell_is_chest(_game_map, next_cell_x, next_cell_y)) {
+            // Open chests
+            if (
+                    keys & GB_J_DPAD & _game_state->dpad_mask &&
+                    map_cell_is_chest(_game_map, next_cell_x, next_cell_y) &&
+                    ! _game_player->_is_walking
+                ) {
                 map_cell_set_activated(_game_map, next_cell_x, next_cell_y);
                 chest_activate(_game_state, chest_get_id(next_cell_x, next_cell_y));
 
