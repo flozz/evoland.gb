@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-#define TEXT_TILE_DEFAULT      0x0E
+#define TEXT_TILE_DEFAULT      0x4C
 #define TEXT_TILE_BLANK        0xC0
 #define TEXT_CHAR_NEWLINE      0x0A
 

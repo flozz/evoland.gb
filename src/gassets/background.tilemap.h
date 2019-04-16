@@ -5,7 +5,7 @@
 
 extern const UINT8 BG_TILEMAP[];
 #define BG_TILEMAP_WIDTH 140
-#define BG_TILEMAP_HEIGHT 80
+#define BG_TILEMAP_HEIGHT 76
 
 
 #endif

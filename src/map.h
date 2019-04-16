@@ -4,7 +4,7 @@
 #include <types.h>
 
 #define MAP_CELL_SIZE 16
-#define MAP_WALKABLE_THRESHOLD 0x60
+#define MAP_WALKABLE_THRESHOLD 0x4C
 #define MAP_OBJECT_CHEST 0x86
 #define MAP_OBJECT_BUSH  0xA6
 
