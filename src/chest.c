@@ -31,8 +31,6 @@ void chest_activate(GameState* game_state, UINT8 chest_id) {
             break;
         case 1:
             for (i = 1 ; i <= 8 ; i += 1) {
-                wait_vbl_done();
-                wait_vbl_done();
                 map_bg_load_chunk(
                     game_state->map,
                     GAME_ORIG_X - 8,
@@ -44,13 +42,14 @@ void chest_activate(GameState* game_state, UINT8 chest_id) {
                 map_bg_load_chunk(
                     game_state->map,
                     GAME_ORIG_X - GB_SCREEN_CENTER_X,
-                    GAME_ORIG_Y + i,
+                    GAME_ORIG_Y + i + 1,
                     0,
-                    GB_SCREEN_CENTER_Y + i,
+                    GB_SCREEN_CENTER_Y + i + 1,
                     GB_SCREEN_WIDTH,
                     1);
+                wait_vbl_done();
+                wait_vbl_done();
             }
-            map_goto(game_state->map, GAME_ORIG_X, GAME_ORIG_Y);
             text_show_message(MSG_2, 4);
             game_state->dpad_mask |= J_UP | J_DOWN;
             break;
