@@ -31,16 +31,29 @@ void game_init() {
     text_load_font();
 
     _game_map = map_new(BG_TILEMAP, BG_TILEMAP_WIDTH, BG_TILEMAP_HEIGHT);
-    map_goto(_game_map, 24, 46);
+    map_goto(_game_map, GAME_ORIG_X, GAME_ORIG_Y);
 
     _game_player = player_new();
 
     _game_state = malloc(sizeof(GameState));
     _game_state->dpad_mask = 0x00;
     _game_state->player_has_sword = FALSE;
+    _game_state->map = _game_map;
     _game_state->player = _game_player;
 
     SHOW_SPRITES;
+}
+
+void game_mask_y() {
+    UINT8 mask[160];
+    UINT8 i;
+
+    for (i = 0 ; i < 160 ; i++) {
+        mask[i] = 0xC0;
+    }
+
+    set_bkg_tiles(0, 0, 20, 8, mask);
+    set_bkg_tiles(0, 10, 20, 8, mask);
 }
 
 void game_main() {
@@ -51,6 +64,7 @@ void game_main() {
     UINT8 keys;
     UINT8 last_keys = 0x00;
 
+    game_mask_y();
     fx_bg_fade_in();
 
     _game_state->dpad_mask = J_RIGHT;
