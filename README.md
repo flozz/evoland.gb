@@ -1,25 +1,60 @@
 # Evoland GB
 
-## Dependencies
+![](./evoland-gb-logo.png)
 
-* sdcc / sdcc-libraries with gbz80 support
+Evoland.gb is a fan-made port of the Evoland game, on the Nintendo GameBoy console. This project is still in a work-in-progress state, but it is in a sufficiently advanced state to be shown.
 
-## Sprites
+For those who do not know Evoland, It is the first game of Shiro Games studio. It takes the form of an action RPB that relates the history of the video game through its technological evolutions and its gameplay. I will not tell you more about it, but if the concept interests you, you will find many let's plays on Youtube.
 
-| Sprit id | Description  |
-|----------|--------------|
-| 0, 1     | Player       |
-| 2, 3     | Player Sword |
+For more informations,
+
+* visit the project's website: https://evogb.flozz.org/
+* or read this article on my blog (French): https://blog.flozz.fr/2019/04/21/evoland-sur-gameboy/
+
+## Building Evoland.gb
+
+### Installing Build Dependencies
+
+To build Rvoland.gb, the SDCC  compiler is required with its libraries and gbz80 support. On Ubuntu / Debian, this can be done with the following command:
+
+    sudo apt install sdcc sdcc-libraries
+
+### Cloning this repository
+
+Then you have to clone this repository:
+
+    git clone git@github.com:flozz/evoland.gb.git
+
+Next go to the project folder
+
+    cd evoland.gb
+
+And download submodules
+
+    git submodule init
+    git submodule update
+
+### Building the ROMs
+
+Finally, just build the ROMs with the following command:
+
+    make
+
+If everything is OK, the following files are generated:
+
+* `evoland_en.gb`: English ROM of Evoland.gb
+* `evoland_fr.gb`: French ROM of Evoland.gb
+
+### Updating assets
+
+If you change assets (map or tilesets in `gassets/` folder), you have to rebuild the assets:
+
+    make gassets
+
+**NOTE:** You will have to install [img2gb](https://github.com/flozz/img2gb) to build the assets.
 
 
-## Messages
+## Changelog
 
-| msg_id | en                                                                      | fr                                                                                  |
-|--------|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| MSG_0  | You got Right Direction\nThere seems to be some chest to open this way. | Débloqué : Direction : droite\nOn dirait qu'il y a un coffre par là.                |
-| MSG_1  | You got Left Direction\nAlways going right is boring!                   | Débloqué : Direction : gauche\nIl faut bien varier les plaisirs.                    |
-| MSG_2  | You got 2D Mouvement\nThat's good, you can't go anywhere else anyway.   | Débloqué : Mouvement 2D\nÇa reste un peu limité...                                  |
-| MSG_3  | You got Basic Scrolling\nYou want to see where you're heading, right?   | Débloqué : Scrolling\nEnfin, vous voyez où vous allez !                             |
-| MSG_4  | You got Sounds FX\nThe game is much more alive this way.                | Débloqué : Effets sonores\nC'est tout de suite plus vivant !                        |
-| MSG_5  | You got Smoother Scrolling\nWill save you some headache.                | Débloqué : Scrolling homogène\nÇa vous évitera un mal de tête.                      |
-| MSG_6  | You got a Sword\nNow you can kill the evil monsters and cut down bushes | Débloqué : Épée\nVous pouvez maintenant tuer les monstres, et couper des buissons ! |
+* **0.3.0** First public release
+
